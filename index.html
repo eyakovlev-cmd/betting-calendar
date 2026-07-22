@@ -209,6 +209,8 @@
   .badge.live { background: rgba(63,185,80,0.15); color: var(--accent); }
   .empty { color: var(--muted); text-align: center; padding: 40px 0; font-size: 14px; }
   footer { margin-top: 40px; color: var(--muted); font-size: 12px; text-align: center; }
+  footer a { color: var(--muted); text-decoration: underline; }
+  footer a:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -236,7 +238,7 @@
 
   <div class="filters" id="filters"></div>
   <div id="timeline"></div>
-  <footer>Данные обновляются автоматически · рейтинг = прогноз пика зрительского трафика · время событий указано по дате начала</footer>
+  <footer>Данные обновляются автоматически · рейтинг = прогноз пика зрительского трафика · время событий указано по дате начала · <a href="https://github.com/eyakovlev-cmd/betting-calendar#readme" target="_blank" rel="noopener">о календаре</a></footer>
 </div>
 
 <script>
