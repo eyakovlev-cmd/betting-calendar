@@ -207,6 +207,50 @@
   .badge.fire { background: rgba(255,107,53,0.15); color: var(--fire); }
   .badge.tbc { background: rgba(139,148,158,0.15); color: var(--muted); border: 1px dashed var(--muted); }
   .badge.live { background: rgba(63,185,80,0.15); color: var(--accent); }
+  .badge.new { background: rgba(63,185,80,0.15); color: var(--accent); border: 1px solid var(--accent); }
+  .badge.changed { background: rgba(255,107,53,0.2); color: var(--fire); border: 1px solid var(--fire); }
+  .badge.confirmed { background: rgba(63,185,80,0.1); color: var(--accent); border: 1px dashed var(--accent); }
+  .diffline {
+    margin-top: 12px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--accent);
+    display: none;
+  }
+  .event .side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .star {
+    background: none;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0;
+  }
+  .star:hover { color: var(--gold); }
+  .star.on { color: var(--gold); }
+  .ics {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .ics:hover { color: var(--text); border-color: var(--muted); }
   .empty { color: var(--muted); text-align: center; padding: 40px 0; font-size: 14px; }
   footer { margin-top: 40px; color: var(--muted); font-size: 12px; text-align: center; }
   footer a { color: var(--muted); text-decoration: underline; }
@@ -223,6 +267,7 @@
       <div class="row"><span class="lvl l2">🔥 Высокий</span><span class="desc"><b>Заметный рост нагрузки.</b> Держать на радаре, учитывать в планировании кампаний</span></div>
       <div class="row"><span class="lvl l1">Фоновый</span><span class="desc">Умеренный или региональный рост — действий обычно не требует</span></div>
     </div>
+    <div class="diffline" id="diffline"></div>
     <div class="countdown" id="countdown" style="display:none">
       <div class="timer" id="timer"></div>
       <div>
@@ -288,6 +333,84 @@ let events = DATA.events;
 let lastUpdated = DATA.lastUpdated;
 let activeFilter = 'Все';
 
+const STARRED_FILTER = '★ Отмеченные';
+const KEY_STAR = 'bc_starred', KEY_SNAP = 'bc_snapshot';
+let starred = new Set();
+try { starred = new Set(JSON.parse(localStorage.getItem(KEY_STAR) || '[]')); } catch (_) {}
+let changes = {};
+
+function ekey(e) { return e.sport + '|' + e.title; }
+function escAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+function toggleStar(k) {
+  starred.has(k) ? starred.delete(k) : starred.add(k);
+  try { localStorage.setItem(KEY_STAR, JSON.stringify([...starred])); } catch (_) {}
+  render();
+}
+
+function computeChanges() {
+  let prev = null;
+  try { prev = JSON.parse(localStorage.getItem(KEY_SNAP)); } catch (_) {}
+  if (prev && prev.events) {
+    for (const e of events) {
+      const k = ekey(e), p = prev.events[k];
+      if (!p) { changes[k] = 'new'; continue; }
+      if (p.date !== e.date || (p.dateEnd || '') !== (e.dateEnd || '')) { changes[k] = 'changed'; continue; }
+      if (p.tbc && !e.tbc) changes[k] = 'confirmed';
+    }
+  }
+  const snap = { savedAt: new Date().toISOString(), events: {} };
+  for (const e of events) snap.events[ekey(e)] = { date: e.date, dateEnd: e.dateEnd || '', tbc: !!e.tbc };
+  try { localStorage.setItem(KEY_SNAP, JSON.stringify(snap)); } catch (_) {}
+}
+
+function renderDiffLine() {
+  const box = document.getElementById('diffline');
+  const ks = Object.keys(changes).filter(k => {
+    const e = events.find(x => ekey(x) === k);
+    return e && !isPast(e);
+  });
+  if (!ks.length) { box.style.display = 'none'; return; }
+  const n = ks.filter(k => changes[k] === 'new').length;
+  const d = ks.filter(k => changes[k] === 'changed').length;
+  const c = ks.filter(k => changes[k] === 'confirmed').length;
+  const parts = [];
+  if (n) parts.push(n + ' нов.');
+  if (d) parts.push(d + ' с изменённой датой');
+  if (c) parts.push(c + ' с подтверждённой датой');
+  box.style.display = 'block';
+  box.textContent = 'С вашего прошлого визита: ' + parts.join(' · ') + ' — помечены на карточках';
+}
+
+function downloadIcs(k) {
+  const e = events.find(x => ekey(x) === k);
+  if (!e) return;
+  const d0 = e.date.replace(/-/g, '');
+  const end = new Date((e.dateEnd || e.date) + 'T00:00:00');
+  end.setDate(end.getDate() + 1);
+  const d1 = end.getFullYear() + String(end.getMonth() + 1).padStart(2, '0') + String(end.getDate()).padStart(2, '0');
+  const escI = s => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,');
+  const ics = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//betting-calendar//RU',
+    'BEGIN:VEVENT',
+    'UID:' + d0 + '-' + Math.abs([...k].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) | 0, 0)) + '@betting-calendar',
+    'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z',
+    'DTSTART;VALUE=DATE:' + d0,
+    'DTEND;VALUE=DATE:' + d1,
+    'SUMMARY:' + escI(e.title),
+    'DESCRIPTION:' + escI((e.note || '') + (e.tbc ? ' (дата уточняется)' : '')),
+    'END:VEVENT', 'END:VCALENDAR'
+  ].join('\r\n');
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = e.title.replace(/[^\wа-яА-ЯёЁ ()-]/g, '').trim().slice(0, 60) + '.ics';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+}
+
 function fmtDate(e) {
   const d = new Date(e.date + 'T00:00:00');
   let s = d.getDate() + ' ' + MONTHS[d.getMonth()].slice(0, 3);
@@ -309,18 +432,22 @@ function isLive(e) {
 }
 
 function render() {
-  const sports = ['Все', ...new Set(events.map(e => e.sport))];
+  const sports = ['Все', ...new Set(events.map(e => e.sport)), STARRED_FILTER];
   document.getElementById('filters').innerHTML = sports.map(s =>
-    `<button class="${s === activeFilter ? 'active' : ''}" onclick="setFilter('${s}')">${s}</button>`
+    `<button class="${s === activeFilter ? 'active' : ''}" data-filter="${escAttr(s)}">${s}</button>`
   ).join('');
+  document.querySelectorAll('#filters button').forEach(b => b.onclick = () => setFilter(b.dataset.filter));
 
   const list = events
-    .filter(e => activeFilter === 'Все' || e.sport === activeFilter)
+    .filter(e => activeFilter === 'Все' || (activeFilter === STARRED_FILTER ? starred.has(ekey(e)) : e.sport === activeFilter))
     .slice()
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const tl = document.getElementById('timeline');
-  if (!list.length) { tl.innerHTML = '<div class="empty">Нет событий по этому фильтру</div>'; return; }
+  if (!list.length) {
+    tl.innerHTML = `<div class="empty">${activeFilter === STARRED_FILTER ? 'Нет отмеченных событий — нажмите ☆ на карточке' : 'Нет событий по этому фильтру'}</div>`;
+    return;
+  }
 
   let html = '', curMonth = -1;
   for (const e of list) {
@@ -329,13 +456,17 @@ function render() {
       curMonth = m;
       html += `<div class="month-title">${MONTHS_NOM[m]}</div>`;
     }
+    const k = ekey(e);
     const cls = ['event', 'hot' + (e.hot || 1), isPast(e) ? 'past' : ''].join(' ');
     const badges = [
       `<span class="badge sport">${e.sport}</span>`,
       e.hot === 3 ? '<span class="badge top">Топ</span>' : '',
       e.hot === 2 ? '<span class="badge fire">🔥</span>' : '',
       isLive(e) ? '<span class="badge live">Идёт</span>' : '',
-      e.tbc ? '<span class="badge tbc">Дата уточняется</span>' : ''
+      e.tbc ? '<span class="badge tbc">Дата уточняется</span>' : '',
+      changes[k] === 'new' ? '<span class="badge new">Новое</span>' : '',
+      changes[k] === 'changed' ? '<span class="badge changed">Дата изменилась</span>' : '',
+      changes[k] === 'confirmed' ? '<span class="badge confirmed">Дата подтверждена</span>' : ''
     ].join('');
     html += `<div class="${cls}">
       <div class="date">${fmtDate(e)}</div>
@@ -343,9 +474,15 @@ function render() {
         <div class="title">${e.title} ${badges}</div>
         ${e.note ? `<div class="note">${e.note}</div>` : ''}
       </div>
+      <div class="side">
+        <button class="star ${starred.has(k) ? 'on' : ''}" data-key="${escAttr(k)}" title="Отметить у себя">${starred.has(k) ? '★' : '☆'}</button>
+        ${!isPast(e) ? `<button class="ics" data-key="${escAttr(k)}" title="Скачать .ics для Google/Outlook">+ в календарь</button>` : ''}
+      </div>
     </div>`;
   }
   tl.innerHTML = html;
+  tl.querySelectorAll('.star').forEach(b => b.onclick = () => toggleStar(b.dataset.key));
+  tl.querySelectorAll('.ics').forEach(b => b.onclick = () => downloadIcs(b.dataset.key));
 }
 
 function setFilter(s) { activeFilter = s; render(); }
@@ -388,7 +525,9 @@ function setUpdated() {
 
 function boot() {
   setUpdated();
+  computeChanges();
   render();
+  renderDiffLine();
   renderSoon();
   tickCountdown();
   setInterval(tickCountdown, 30000);
