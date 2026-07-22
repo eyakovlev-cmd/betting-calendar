@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Спортивный календарь — пики трафика</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel2: #1c2330;
+    --border: #2b3444;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #3fb950;
+    --gold: #f0b429;
+    --fire: #ff6b35;
+    --dim: 0.38;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 32px 16px 64px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  header { margin-bottom: 24px; }
+  h1 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h1 .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.4; } }
+  .updated {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .legend {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+  .legend .row { display: flex; gap: 10px; align-items: baseline; }
+  .legend .lvl {
+    flex-shrink: 0;
+    width: 92px;
+    font-weight: 800;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .legend .lvl.l3 { color: var(--gold); }
+  .legend .lvl.l2 { color: var(--fire); }
+  .legend .lvl.l1 { color: var(--muted); }
+  .legend .desc { color: var(--muted); line-height: 1.4; }
+  .legend .desc b { color: var(--text); font-weight: 700; }
+  .countdown {
+    margin-top: 16px;
+    background: linear-gradient(135deg, var(--panel2), var(--panel));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .countdown .timer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+  .countdown .label { color: var(--muted); font-size: 13px; }
+  .countdown .event-name { font-weight: 600; font-size: 14px; }
+  .soon {
+    margin-top: 16px;
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 14px 18px;
+    background: rgba(240,180,41,0.06);
+  }
+  .soon h2 {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .soon .item {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    padding: 4px 0;
+  }
+  .soon .item .d {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 96px;
+    flex-shrink: 0;
+  }
+  .soon .item .t { font-weight: 600; }
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 22px 0 18px;
+  }
+  .filters button {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filters button:hover { border-color: var(--muted); color: var(--text); }
+  .filters button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #04140a;
+  }
+  .month-title {
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin: 28px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .event {
+    display: flex;
+    gap: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s;
+  }
+  .event:hover { border-color: #3d4a5f; }
+  .event.hot3 { border-left: 3px solid var(--gold); }
+  .event.hot2 { border-left: 3px solid var(--fire); }
+  .event.past { opacity: var(--dim); }
+  .event .date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 96px;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+  .event.past .date { color: var(--muted); }
+  .event .body { flex: 1; }
+  .event .title {
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .event .note { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+  .badge {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+  .badge.sport { background: var(--panel2); color: var(--muted); border: 1px solid var(--border); }
+  .badge.top { background: rgba(240,180,41,0.15); color: var(--gold); }
+  .badge.fire { background: rgba(255,107,53,0.15); color: var(--fire); }
+  .badge.tbc { background: rgba(139,148,158,0.15); color: var(--muted); border: 1px dashed var(--muted); }
+  .badge.live { background: rgba(63,185,80,0.15); color: var(--accent); }
+  .empty { color: var(--muted); text-align: center; padding: 40px 0; font-size: 14px; }
+  footer { margin-top: 40px; color: var(--muted); font-size: 12px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><span class="dot"></span>Спортивный календарь — пики трафика</h1>
+    <div class="updated" id="updated"></div>
+    <div class="legend">
+      <div class="row"><span class="lvl l3">Топ</span><span class="desc"><b>Максимальный пик трафика.</b> Предупредить клиентов, проверить готовность инфраструктуры</span></div>
+      <div class="row"><span class="lvl l2">🔥 Высокий</span><span class="desc"><b>Заметный рост нагрузки.</b> Держать на радаре, учитывать в планировании кампаний</span></div>
+      <div class="row"><span class="lvl l1">Фоновый</span><span class="desc">Умеренный или региональный рост — действий обычно не требует</span></div>
+    </div>
+    <div class="countdown" id="countdown" style="display:none">
+      <div class="timer" id="timer"></div>
+      <div>
+        <div class="label">до ближайшего топ-события</div>
+        <div class="event-name" id="next-event"></div>
+      </div>
+    </div>
+    <div class="soon" id="soon" style="display:none">
+      <h2>Ближайшие 14 дней — готовить сейчас</h2>
+      <div id="soon-list"></div>
+    </div>
+  </header>
+
+  <div class="filters" id="filters"></div>
+  <div id="timeline"></div>
+  <footer>Данные обновляются автоматически · рейтинг = прогноз пика зрительского трафика · время событий указано по дате начала</footer>
+</div>
+
+<script>
+/* ===== EVENTS DATA START =====
+   Этот блок перекрывается файлом events.json, если тот лежит рядом.
+   Для ручного обновления меняйте только объект DATA ниже. */
+const DATA = {
+  "lastUpdated": "2026-07-22",
+  "events": [
+    {"date":"2026-08-01","sport":"Бокс","title":"Ламонт Роуч — Уильям Сепеда","note":"Лас-Вегас, The Theater at Virgin Hotels","hot":1},
+    {"date":"2026-08-13","dateEnd":"2026-08-23","sport":"Киберспорт","title":"The International 2026 (Dota 2)","note":"Шанхай, Oriental Sports Center. Аудитория смотрит официальные бесплатные Twitch/YouTube-стримы — на спортстриминговых сайтах пик слабый","hot":1},
+    {"date":"2026-08-15","sport":"UFC","title":"UFC 330: Махачев — Мачадо Гэрри","note":"Филадельфия, Xfinity Mobile Arena. Главный кард года, PPV — один из крупнейших пиков трафика","hot":3},
+    {"date":"2026-08-16","sport":"Футбол","title":"Суперкубок Англии: Арсенал — Ман Сити","note":"Кардифф, Millennium Stadium. Занавес нового сезона","hot":2},
+    {"date":"2026-08-16","sport":"Футбол","title":"Старт Ла Лиги 2026/27","note":"Первый тур испанского чемпионата","hot":2},
+    {"date":"2026-08-21","dateEnd":"2026-08-23","sport":"Футбол","title":"Старт АПЛ 2026/27","note":"Матч открытия в пятницу 21 августа, первый полный тур 22–23 августа. АПЛ — главный источник трафика выходного дня","hot":3},
+    {"date":"2026-08-23","sport":"Формула-1","title":"Гран-при Нидерландов","note":"Зандворт. Разгар первого сезона нового регламента","hot":1},
+    {"date":"2026-08-23","sport":"Футбол","title":"Старт Серии А и Лиги 1 2026/27","note":"Первые туры чемпионатов Италии и Франции","hot":1},
+    {"date":"2026-08-27","sport":"Футбол","title":"Жеребьёвка лигового этапа ЛЧ","note":"Определится сетка Лиги чемпионов 2026/27. Трансляционного трафика почти не даёт","hot":1},
+    {"date":"2026-08-28","dateEnd":"2026-08-30","sport":"Футбол","title":"Старт Бундеслиги 2026/27","note":"В источниках разночтения по дате первого тура","hot":2,"tbc":true},
+    {"date":"2026-08-29","sport":"Бокс","title":"Мозес Итаума — Филип Хргович","note":"Лондон, O2 Arena. Хевивейт","hot":2},
+    {"date":"2026-08-30","dateEnd":"2026-09-13","sport":"Теннис","title":"US Open 2026","note":"Нью-Йорк. Трафик растянут на две недели, пик — финальный уикенд 12–13 сентября","hot":2},
+    {"date":"2026-09-05","sport":"Хоккей","title":"Старт КХЛ 2026/27","note":"Шесть матчей в первый игровой день, регулярка до 20 марта. Трафик в основном RU/CIS, глобальный пик небольшой","hot":1},
+    {"date":"2026-09-05","sport":"Бокс","title":"Кэти Тейлор — Флора Пили","note":"Дублин. Прощальный бой Тейлор","hot":1},
+    {"date":"2026-09-06","sport":"Формула-1","title":"Гран-при Италии (Монца)","note":"15-й этап сезона, гонка в воскресенье","hot":2},
+    {"date":"2026-09-08","dateEnd":"2026-09-10","sport":"Футбол","title":"ЛЧ: 1-й тур лигового этапа","note":"Старт Лиги чемпионов 2026/27. Три вечера подряд с пиковой нагрузкой","hot":3},
+    {"date":"2026-09-09","sport":"NFL","title":"NFL Kickoff: Сиэтл — Нью-Ингленд","note":"Чемпион Супербоула открывает сезон 2026 (среда). Мощный пик в US-сегменте","hot":2},
+    {"date":"2026-09-11","dateEnd":"2026-09-13","sport":"Формула-1","title":"Дебют Гран-при Мадрида","note":"Новая городская трасса MADRING. В источниках также 4–6 сентября — дата уточняется","hot":2,"tbc":true},
+    {"date":"2026-09-16","dateEnd":"2026-09-17","sport":"Футбол","title":"Лига Европы: 1-й тур лигового этапа","note":"Старт Лиги Европы 2026/27","hot":1},
+    {"date":"2026-09-19","sport":"UFC","title":"UFC 331","note":"Лос-Анджелес. В источниках также фигурирует 12 сентября — дата уточняется","hot":2,"tbc":true},
+    {"date":"2026-09-24","dateEnd":"2026-09-29","sport":"Футбол","title":"Лига наций: туры 1–2","note":"Первые матчи лигового этапа сборных","hot":2},
+    {"date":"2026-09-26","sport":"Бокс","title":"Мейвезер — Пакьяо II","note":"Выставочный реванш легенд. PPV-событие с одним из максимальных разовых пиков трафика","hot":3},
+    {"date":"2026-09-29","sport":"Хоккей","title":"Старт НХЛ 2026/27","note":"Впервые с 1993/94 по 84 матча — сезон стартует уже в сентябре. Аудитория в основном Северная Америка, старт регулярки без большого пика","hot":1},
+    {"date":"2026-09-30","sport":"Бокс","title":"Канело — Мбилли + Гарсия — Бенн","note":"Возвращение Канело, точная дата в сентябре уточняется","hot":3,"tbc":true},
+    {"date":"2026-09-30","dateEnd":"2026-10-06","sport":"Футбол","title":"Лига наций: туры 3–4","note":"Сборные доигрывают две трети лигового этапа","hot":2},
+    {"date":"2026-10-13","dateEnd":"2026-10-14","sport":"Футбол","title":"ЛЧ: 2-й тур лигового этапа","note":"Лига чемпионов 2026/27","hot":2},
+    {"date":"2026-10-20","sport":"Баскетбол","title":"НБА: открытие сезона 2026/27","note":"Opening Night, старт регулярного чемпионата","hot":2},
+    {"date":"2026-10-20","dateEnd":"2026-10-21","sport":"Футбол","title":"ЛЧ: 3-й тур лигового этапа","note":"Лига чемпионов 2026/27","hot":2},
+    {"date":"2026-10-25","sport":"Футбол","title":"Эль Класико: Барселона — Реал Мадрид","note":"Камп Ноу, 10-й тур Ла Лиги. Окно 23–25 октября, точный день объявят позже. Максимальный пик клубного футбола","hot":3,"tbc":true}
+  ]
+};
+/* ===== EVENTS DATA END ===== */
+
+const MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const MONTHS_NOM = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+let events = DATA.events;
+let lastUpdated = DATA.lastUpdated;
+let activeFilter = 'Все';
+
+function fmtDate(e) {
+  const d = new Date(e.date + 'T00:00:00');
+  let s = d.getDate() + ' ' + MONTHS[d.getMonth()].slice(0, 3);
+  if (e.dateEnd) {
+    const d2 = new Date(e.dateEnd + 'T00:00:00');
+    s += '–' + d2.getDate() + ' ' + MONTHS[d2.getMonth()].slice(0, 3);
+  }
+  return s;
+}
+
+function isPast(e) {
+  const end = new Date((e.dateEnd || e.date) + 'T23:59:59');
+  return end < new Date();
+}
+
+function isLive(e) {
+  const now = new Date();
+  return new Date(e.date + 'T00:00:00') <= now && now <= new Date((e.dateEnd || e.date) + 'T23:59:59');
+}
+
+function render() {
+  const sports = ['Все', ...new Set(events.map(e => e.sport))];
+  document.getElementById('filters').innerHTML = sports.map(s =>
+    `<button class="${s === activeFilter ? 'active' : ''}" onclick="setFilter('${s}')">${s}</button>`
+  ).join('');
+
+  const list = events
+    .filter(e => activeFilter === 'Все' || e.sport === activeFilter)
+    .slice()
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const tl = document.getElementById('timeline');
+  if (!list.length) { tl.innerHTML = '<div class="empty">Нет событий по этому фильтру</div>'; return; }
+
+  let html = '', curMonth = -1;
+  for (const e of list) {
+    const m = new Date(e.date + 'T00:00:00').getMonth();
+    if (m !== curMonth) {
+      curMonth = m;
+      html += `<div class="month-title">${MONTHS_NOM[m]}</div>`;
+    }
+    const cls = ['event', 'hot' + (e.hot || 1), isPast(e) ? 'past' : ''].join(' ');
+    const badges = [
+      `<span class="badge sport">${e.sport}</span>`,
+      e.hot === 3 ? '<span class="badge top">Топ</span>' : '',
+      e.hot === 2 ? '<span class="badge fire">🔥</span>' : '',
+      isLive(e) ? '<span class="badge live">Идёт</span>' : '',
+      e.tbc ? '<span class="badge tbc">Дата уточняется</span>' : ''
+    ].join('');
+    html += `<div class="${cls}">
+      <div class="date">${fmtDate(e)}</div>
+      <div class="body">
+        <div class="title">${e.title} ${badges}</div>
+        ${e.note ? `<div class="note">${e.note}</div>` : ''}
+      </div>
+    </div>`;
+  }
+  tl.innerHTML = html;
+}
+
+function setFilter(s) { activeFilter = s; render(); }
+
+function renderSoon() {
+  const now = new Date();
+  const horizon = new Date(now.getTime() + 14 * 86400000);
+  const list = events
+    .filter(e => (e.hot || 1) >= 2)
+    .filter(e => new Date(e.date + 'T00:00:00') <= horizon && !isPast(e))
+    .sort((a, b) => a.date.localeCompare(b.date));
+  const box = document.getElementById('soon');
+  if (!list.length) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  document.getElementById('soon-list').innerHTML = list.map(e =>
+    `<div class="item"><span class="d">${fmtDate(e)}</span><span class="t">${e.title}</span>${e.hot === 3 ? '<span class="badge top">Топ</span>' : '<span class="badge fire">🔥</span>'}</div>`
+  ).join('');
+}
+
+function tickCountdown() {
+  const next = events
+    .filter(e => e.hot === 3 && !isPast(e) && !isLive(e))
+    .sort((a, b) => a.date.localeCompare(b.date))[0];
+  const box = document.getElementById('countdown');
+  if (!next) { box.style.display = 'none'; return; }
+  box.style.display = 'flex';
+  document.getElementById('next-event').textContent = next.title;
+  const diff = new Date(next.date + 'T00:00:00') - new Date();
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor(diff % 86400000 / 3600000);
+  const min = Math.floor(diff % 3600000 / 60000);
+  document.getElementById('timer').textContent = `${d}д ${String(h).padStart(2,'0')}ч ${String(min).padStart(2,'0')}м`;
+}
+
+function setUpdated() {
+  const d = new Date(lastUpdated + 'T00:00:00');
+  document.getElementById('updated').textContent =
+    'Обновлено: ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function boot() {
+  setUpdated();
+  render();
+  renderSoon();
+  tickCountdown();
+  setInterval(tickCountdown, 30000);
+}
+
+/* events.json рядом с файлом перекрывает встроенные данные (на file:// молча игнорируется) */
+fetch('events.json', { cache: 'no-store' })
+  .then(r => r.ok ? r.json() : Promise.reject())
+  .then(json => {
+    if (json && Array.isArray(json.events)) {
+      events = json.events;
+      lastUpdated = json.lastUpdated || lastUpdated;
+    }
+  })
+  .catch(() => {})
+  .finally(boot);
+</script>
+</body>
+</html>
