@@ -1,5 +1,8 @@
 {
   "lastUpdated": "2026-07-22",
+  "changelog": [
+    {"date": "2026-07-22", "text": "Календарь запущен: 29 событий на август–октябрь"}
+  ],
   "events": [
     {"date":"2026-08-01","sport":"Бокс","title":"Ламонт Роуч — Уильям Сепеда","note":"Лас-Вегас, The Theater at Virgin Hotels","hot":1},
     {"date":"2026-08-13","dateEnd":"2026-08-23","sport":"Киберспорт","title":"The International 2026 (Dota 2)","note":"Шанхай, Oriental Sports Center. Аудитория смотрит официальные бесплатные Twitch/YouTube-стримы — на спортстриминговых сайтах пик слабый","hot":1},
