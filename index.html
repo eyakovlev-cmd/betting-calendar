@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Спортивный календарь — пики трафика</title>
+<title>Календарь беттинг-событий</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -51,31 +51,6 @@
     margin-top: 6px;
     font-family: 'JetBrains Mono', monospace;
   }
-  .legend {
-    margin-top: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 16px;
-    font-size: 13px;
-  }
-  .legend .row { display: flex; gap: 10px; align-items: baseline; }
-  .legend .lvl {
-    flex-shrink: 0;
-    width: 92px;
-    font-weight: 800;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .legend .lvl.l3 { color: var(--gold); }
-  .legend .lvl.l2 { color: var(--fire); }
-  .legend .lvl.l1 { color: var(--muted); }
-  .legend .desc { color: var(--muted); line-height: 1.4; }
-  .legend .desc b { color: var(--text); font-weight: 700; }
   .countdown {
     margin-top: 16px;
     background: linear-gradient(135deg, var(--panel2), var(--panel));
@@ -96,35 +71,6 @@
   }
   .countdown .label { color: var(--muted); font-size: 13px; }
   .countdown .event-name { font-weight: 600; font-size: 14px; }
-  .soon {
-    margin-top: 16px;
-    border: 1px solid var(--gold);
-    border-radius: 12px;
-    padding: 14px 18px;
-    background: rgba(240,180,41,0.06);
-  }
-  .soon h2 {
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--gold);
-    margin-bottom: 10px;
-  }
-  .soon .item {
-    display: flex;
-    gap: 12px;
-    font-size: 13px;
-    padding: 4px 0;
-  }
-  .soon .item .d {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
-    color: var(--accent);
-    min-width: 96px;
-    flex-shrink: 0;
-  }
-  .soon .item .t { font-weight: 600; }
   .filters {
     display: flex;
     gap: 8px;
@@ -207,97 +153,15 @@
   .badge.fire { background: rgba(255,107,53,0.15); color: var(--fire); }
   .badge.tbc { background: rgba(139,148,158,0.15); color: var(--muted); border: 1px dashed var(--muted); }
   .badge.live { background: rgba(63,185,80,0.15); color: var(--accent); }
-  .badge.new { background: rgba(63,185,80,0.15); color: var(--accent); border: 1px solid var(--accent); }
-  .badge.changed { background: rgba(255,107,53,0.2); color: var(--fire); border: 1px solid var(--fire); }
-  .badge.confirmed { background: rgba(63,185,80,0.1); color: var(--accent); border: 1px dashed var(--accent); }
-  .diffline {
-    margin-top: 12px;
-    background: rgba(63,185,80,0.08);
-    border: 1px solid var(--accent);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 13px;
-    color: var(--accent);
-    display: none;
-  }
-  .changelog {
-    margin-top: 12px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 13px;
-    display: none;
-  }
-  .changelog summary {
-    padding: 10px 14px;
-    cursor: pointer;
-    color: var(--muted);
-    font-weight: 600;
-    list-style: none;
-  }
-  .changelog summary::before { content: '▸ '; }
-  .changelog[open] summary::before { content: '▾ '; }
-  .changelog .entries { padding: 0 14px 12px; }
-  .changelog .entry { display: flex; gap: 10px; padding: 3px 0; color: var(--muted); line-height: 1.45; }
-  .changelog .entry .d {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
-    color: var(--accent);
-    min-width: 64px;
-    flex-shrink: 0;
-  }
-  .event .side {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-  .star {
-    background: none;
-    border: none;
-    font-size: 20px;
-    line-height: 1;
-    color: var(--muted);
-    cursor: pointer;
-    padding: 0;
-  }
-  .star:hover { color: var(--gold); }
-  .star.on { color: var(--gold); }
-  .ics {
-    background: var(--panel2);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 9px;
-    border-radius: 6px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .ics:hover { color: var(--text); border-color: var(--muted); }
   .empty { color: var(--muted); text-align: center; padding: 40px 0; font-size: 14px; }
   footer { margin-top: 40px; color: var(--muted); font-size: 12px; text-align: center; }
-  footer a { color: var(--muted); text-decoration: underline; }
-  footer a:hover { color: var(--text); }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1><span class="dot"></span>Спортивный календарь — пики трафика</h1>
+    <h1><span class="dot"></span>Календарь беттинг-событий</h1>
     <div class="updated" id="updated"></div>
-    <div class="legend">
-      <div class="row"><span class="lvl l3">Топ</span><span class="desc"><b>Максимальный пик трафика.</b> Предупредить клиентов, проверить готовность инфраструктуры</span></div>
-      <div class="row"><span class="lvl l2">🔥 Высокий</span><span class="desc"><b>Заметный рост нагрузки.</b> Держать на радаре, учитывать в планировании кампаний</span></div>
-      <div class="row"><span class="lvl l1">Фоновый</span><span class="desc">Умеренный или региональный рост — действий обычно не требует</span></div>
-    </div>
-    <div class="diffline" id="diffline"></div>
-    <details class="changelog" id="changelog">
-      <summary>Журнал изменений</summary>
-      <div class="entries" id="changelog-entries"></div>
-    </details>
     <div class="countdown" id="countdown" style="display:none">
       <div class="timer" id="timer"></div>
       <div>
@@ -305,15 +169,11 @@
         <div class="event-name" id="next-event"></div>
       </div>
     </div>
-    <div class="soon" id="soon" style="display:none">
-      <h2>Ближайшие 14 дней — готовить сейчас</h2>
-      <div id="soon-list"></div>
-    </div>
   </header>
 
   <div class="filters" id="filters"></div>
   <div id="timeline"></div>
-  <footer>Данные обновляются автоматически · рейтинг = прогноз пика зрительского трафика · время событий указано по дате начала · <a href="https://github.com/eyakovlev-cmd/betting-calendar#readme" target="_blank" rel="noopener">о календаре</a></footer>
+  <footer>Данные обновляются автоматически · время событий указано по дате начала</footer>
 </div>
 
 <script>
@@ -321,88 +181,37 @@
    Этот блок перекрывается файлом events.json, если тот лежит рядом.
    Для ручного обновления меняйте только объект DATA ниже. */
 const DATA = {
-  "lastUpdated": "2026-08-03",
-  "changelog": [
-    {"date":"2026-08-03","text":"Мейвезер — Пакьяо II удалён: бой отложен до 2027 года из-за судебного спора"},
-    {"date":"2026-08-03","text":"Добавлен Суперкубок УЕФА (12 августа, Зальцбург): ПСЖ — Астон Вилла"},
-    {"date":"2026-08-03","text":"Добавлены суперкубки: Трофей чемпионов (16 августа), Суперкубок Германии (22 августа)"},
-    {"date":"2026-08-03","text":"Добавлены топ-дерби: манчестерское (12 сентября, tbc), Дер Классикер (31 октября), миланское (1 ноября, tbc)"},
-    {"date":"2026-08-03","text":"Добавлен 4-й тур ЛЧ (3–4 ноября) и туры 2–3 Лиги Европы (15 и 22 октября)"},
-    {"date":"2026-08-03","text":"Добавлены этапы Ф-1: Баку, Сингапур, Остин, Мехико"},
-    {"date":"2026-08-03","text":"Добавлены турниры UFC: Шанхай, Париж, UFC 332, Эдмонтон, UFC 333 (Волкановски — Евлоев)"},
-    {"date":"2026-08-03","text":"Добавлен бокс Ромеро — Лопес (22 августа, Лас-Вегас)"},
-    {"date":"2026-08-03","text":"Добавлены теннисные мастерсы: Цинциннати, Шанхай, Париж"},
-    {"date":"2026-08-03","text":"Добавлены международные матчи NFL: Мельбурн, Рио, Лондон, Париж"},
-    {"date":"2026-08-03","text":"Добавлены старт Евролиги (24 сентября) и ЧМ по LoL (с 15 октября)"},
-    {"date":"2026-08-03","text":"Уточнены даты: Серия А — 22–23 августа, Лига наций туры 3–4 — 1–6 октября"},
-    {"date":"2026-08-03","text":"НБА: открытие 20 октября помечено tbc — официальный календарь ещё не опубликован"},
-    {"date":"2026-07-27","text":"Бундеслига: подтверждена дата первого тура 28–30 августа, tbc снят"},
-    {"date":"2026-07-27","text":"Гран-при Мадрида: дата подтверждена (гонка 13 сентября), tbc снят"},
-    {"date":"2026-07-27","text":"UFC 331: подтверждена дата 19 сентября, мейн-ивент Оливейра — Царукян"},
-    {"date":"2026-07-27","text":"Старт Ла Лиги перенесён: было 16 августа → стало 15–17 августа"},
-    {"date":"2026-07-27","text":"Эль Класико: дата 25 октября подтверждена календарём LaLiga, tbc снят"},
-    {"date":"2026-07-27","text":"Канело — Мбилли перенесён: было 30 сентября (tbc) → стало 31 октября, Рияд"},
-    {"date":"2026-07-22","text":"Календарь запущен: 29 событий на август–октябрь"}
-  ],
+  "lastUpdated": "2026-07-22",
   "events": [
     {"date":"2026-08-01","sport":"Бокс","title":"Ламонт Роуч — Уильям Сепеда","note":"Лас-Вегас, The Theater at Virgin Hotels","hot":1},
-    {"date":"2026-08-12","sport":"Футбол","title":"Суперкубок УЕФА: ПСЖ — Астон Вилла","note":"Ред Булл Арена, Зальцбург. Первый еврокубковый трофей сезона","hot":2},
-    {"date":"2026-08-13","dateEnd":"2026-08-23","sport":"Киберспорт","title":"The International 2026 (Dota 2)","note":"Шанхай, Oriental Sports Center. Плей-офф 20–23 августа. Аудитория смотрит официальные бесплатные Twitch/YouTube-стримы — на спортстриминговых сайтах пик слабый","hot":1},
-    {"date":"2026-08-13","dateEnd":"2026-08-23","sport":"Теннис","title":"Мастерс Цинциннати (ATP/WTA 1000)","note":"Мейсон, Огайо. Разогрев перед US Open, пик — финалы 23 августа","hot":1},
-    {"date":"2026-08-15","sport":"UFC","title":"UFC 330: Махачев — Мачадо Гэрри","note":"Филадельфия, Xfinity Mobile Arena. Титул в полусреднем весе, главный кард года, PPV — один из крупнейших пиков трафика","hot":3},
-    {"date":"2026-08-15","dateEnd":"2026-08-17","sport":"Футбол","title":"Старт Ла Лиги 2026/27","note":"Матчи Барселоны и Реала 1-го тура перенесены на 25–27 августа из-за игроков на ЧМ","hot":2},
-    {"date":"2026-08-16","sport":"Футбол","title":"Суперкубок Англии: Арсенал — Ман Сити","note":"Кардифф, Principality Stadium. Занавес нового сезона в Англии","hot":2},
-    {"date":"2026-08-16","sport":"Футбол","title":"Трофей чемпионов: Ланс — ПСЖ","note":"Ланс, Bollaert-Delelis. Суперкубок Франции","hot":1},
-    {"date":"2026-08-21","dateEnd":"2026-08-23","sport":"Формула-1","title":"Гран-при Нидерландов (Зандворт)","note":"Гонка в воскресенье 23 августа. По сообщениям — последний этап в Зандворте, контракт истекает","hot":1},
-    {"date":"2026-08-21","dateEnd":"2026-08-23","sport":"Футбол","title":"Старт АПЛ 2026/27","note":"Матч открытия в пятницу 21 августа: Арсенал — Ковентри. Первый полный тур 22–23 августа. Сезон сдвинут на неделю после ЧМ. АПЛ — главный источник трафика выходного дня","hot":3},
-    {"date":"2026-08-22","sport":"Бокс","title":"Ролли Ромеро — Теофимо Лопес","note":"T-Mobile Arena, Лас-Вегас. Титул WBA в полусреднем весе","hot":2},
-    {"date":"2026-08-22","dateEnd":"2026-08-23","sport":"Футбол","title":"Старт Серии А и Лиги 1 2026/27","note":"Первый тур Италии 22–23 августа, Франции — уикенд 23 августа","hot":1},
-    {"date":"2026-08-22","sport":"Футбол","title":"Суперкубок Германии: Боруссия Дортмунд — Бавария","note":"Signal Iduna Park, Дортмунд. Классикер до старта Бундеслиги","hot":1},
-    {"date":"2026-08-27","sport":"Футбол","title":"Жеребьёвка лигового этапа ЛЧ","note":"Ньон. Определится сетка Лиги чемпионов 2026/27. Трансляционного трафика почти не даёт","hot":1},
-    {"date":"2026-08-28","dateEnd":"2026-08-30","sport":"Футбол","title":"Старт Бундеслиги 2026/27","note":"Открытие 28 августа: Бавария — Штутгарт. Даты и время первого тура подтверждены DFL","hot":2},
-    {"date":"2026-08-29","sport":"UFC","title":"UFC Fight Night: Умар Нурмагомедов — Сон Ядун","note":"Shanghai Indoor Stadium, Шанхай. Лёгкий вес до 61 кг, сильный азиатский сегмент","hot":1},
-    {"date":"2026-08-29","sport":"Бокс","title":"Мозес Итаума — Филип Хргович","note":"Лондон, The O2. Хевивейт, кард Queensberry","hot":2},
-    {"date":"2026-08-30","dateEnd":"2026-09-13","sport":"Теннис","title":"US Open 2026","note":"Нью-Йорк. Трафик растянут на две недели, пик — финалы 12 (женщины) и 13 сентября (мужчины)","hot":2},
-    {"date":"2026-09-04","sport":"Формула-1","title":"Гран-при Италии (Монца)","note":"Гонка в воскресенье 6 сентября. Домашний этап Ferrari — стабильно высокий трафик","hot":2},
-    {"date":"2026-09-05","sport":"UFC","title":"UFC Fight Night: Хукер — Парнасс","note":"Accor Arena, Париж. Лёгкий вес, европейское время трансляции","hot":1},
-    {"date":"2026-09-05","sport":"Бокс","title":"Кэти Тейлор — Флора Пили","note":"Croke Park, Дублин. Прощальный бой Тейлор за абсолютное первенство, стадионное шоу DAZN","hot":2},
-    {"date":"2026-09-05","sport":"Хоккей","title":"Старт КХЛ 2026/27","note":"Шесть матчей в первый игровой день, регулярка до 20 марта. Трафик в основном RU/CIS, глобальный пик небольшой","hot":1},
-    {"date":"2026-09-08","dateEnd":"2026-09-10","sport":"Футбол","title":"ЛЧ: 1-й тур лигового этапа","note":"Старт Лиги чемпионов 2026/27. Три вечера подряд с пиковой нагрузкой","hot":3},
-    {"date":"2026-09-09","sport":"NFL","title":"NFL Kickoff: Сиэтл — Нью-Ингленд","note":"Чемпион Супербоула открывает сезон 2026 (среда). Мощный пик в US-сегменте","hot":2},
-    {"date":"2026-09-10","sport":"NFL","title":"NFL в Мельбурне: Рэмс — Форти Найнерс","note":"MCG, Мельбурн. Первый в истории матч регулярки NFL в Австралии, утреннее время по US","hot":1},
-    {"date":"2026-09-11","dateEnd":"2026-09-13","sport":"Формула-1","title":"Дебют Гран-при Мадрида","note":"Трасса MADRING, гонка в воскресенье 13 сентября. Дебютная городская трасса вместо Имолы","hot":2},
-    {"date":"2026-09-12","sport":"UFC","title":"Noche UFC 2026: Родригес — Силва","note":"Desert Diamond Arena, Глендейл. Кард на уикенд Дня независимости Мексики, также Грассо — Фиоро и Морено — Моралес","hot":2},
-    {"date":"2026-09-12","sport":"Бокс","title":"Райан Гарсия — Конор Бенн","note":"T-Mobile Arena, Лас-Вегас. Титул WBC в полусреднем весе, вечер Zuffa Boxing","hot":2},
-    {"date":"2026-09-12","sport":"Футбол","title":"Манчестерское дерби: Ман Юнайтед — Ман Сити","note":"Олд Траффорд, 4-й тур АПЛ. В источниках расходятся 12 и 13 сентября — точный день уточняется","hot":2,"tbc":true},
+    {"date":"2026-08-13","dateEnd":"2026-08-23","sport":"Киберспорт","title":"The International 2026 (Dota 2)","note":"Шанхай, Oriental Sports Center. Главный турнир года, огромные беттинг-объёмы","hot":3},
+    {"date":"2026-08-15","sport":"UFC","title":"UFC 330: Махачев — Мачадо Гэрри","note":"Филадельфия, Xfinity Mobile Arena. Главный кард года","hot":3},
+    {"date":"2026-08-16","sport":"Футбол","title":"Суперкубок Англии: Арсенал — Ман Сити","note":"Кардифф, Millennium Stadium. Занавес нового сезона","hot":2},
+    {"date":"2026-08-16","sport":"Футбол","title":"Старт Ла Лиги 2026/27","note":"Первый тур испанского чемпионата","hot":2},
+    {"date":"2026-08-21","dateEnd":"2026-08-23","sport":"Футбол","title":"Старт АПЛ 2026/27","note":"Матч открытия в пятницу 21 августа, первый полный тур 22–23 августа","hot":3},
+    {"date":"2026-08-23","sport":"Формула-1","title":"Гран-при Нидерландов","note":"Зандворт. Разгар первого сезона нового регламента","hot":1},
+    {"date":"2026-08-23","sport":"Футбол","title":"Старт Серии А и Лиги 1 2026/27","note":"Первые туры чемпионатов Италии и Франции","hot":1},
+    {"date":"2026-08-27","sport":"Футбол","title":"Жеребьёвка лигового этапа ЛЧ","note":"Определится сетка Лиги чемпионов 2026/27","hot":1},
+    {"date":"2026-08-28","dateEnd":"2026-08-30","sport":"Футбол","title":"Старт Бундеслиги 2026/27","note":"В источниках разночтения по дате первого тура","hot":2,"tbc":true},
+    {"date":"2026-08-29","sport":"Бокс","title":"Мозес Итаума — Филип Хргович","note":"Лондон, O2 Arena. Хевивейт","hot":2},
+    {"date":"2026-08-30","dateEnd":"2026-09-13","sport":"Теннис","title":"US Open 2026","note":"Нью-Йорк. Последний ТБШ сезона, основная сетка с 30 августа","hot":3},
+    {"date":"2026-09-05","sport":"Хоккей","title":"Старт КХЛ 2026/27","note":"Шесть матчей в первый игровой день, регулярка до 20 марта","hot":2},
+    {"date":"2026-09-05","sport":"Бокс","title":"Кэти Тейлор — Флора Пили","note":"Дублин. Прощальный бой Тейлор","hot":1},
+    {"date":"2026-09-06","sport":"Формула-1","title":"Гран-при Италии (Монца)","note":"15-й этап сезона, гонка в воскресенье","hot":2},
+    {"date":"2026-09-08","dateEnd":"2026-09-10","sport":"Футбол","title":"ЛЧ: 1-й тур лигового этапа","note":"Старт Лиги чемпионов 2026/27","hot":3},
+    {"date":"2026-09-09","sport":"NFL","title":"NFL Kickoff: Сиэтл — Нью-Ингленд","note":"Чемпион Супербоула открывает сезон 2026 (среда)","hot":2},
+    {"date":"2026-09-11","dateEnd":"2026-09-13","sport":"Формула-1","title":"Дебют Гран-при Мадрида","note":"Новая городская трасса MADRING. В источниках также 4–6 сентября — дата уточняется","hot":2,"tbc":true},
     {"date":"2026-09-16","dateEnd":"2026-09-17","sport":"Футбол","title":"Лига Европы: 1-й тур лигового этапа","note":"Старт Лиги Европы 2026/27","hot":1},
-    {"date":"2026-09-19","sport":"UFC","title":"UFC 331: Оливейра — Царукян 2","note":"Crypto.com Arena, Лос-Анджелес. Дата подтверждена, мейн-ивент пока не опубликован на UFC.com — статус боя за титул BMF снят","hot":2},
-    {"date":"2026-09-24","sport":"Баскетбол","title":"Старт Евролиги 2026/27","note":"1-й тур: Dubai Basketball — Реал Мадрид, Баскония — Олимпиакос. Преимущественно европейская аудитория","hot":1},
-    {"date":"2026-09-24","dateEnd":"2026-09-29","sport":"Футбол","title":"Лига наций: туры 1–2","note":"Первые матчи лигового этапа сборных (24–26 и 27–29 сентября)","hot":2},
-    {"date":"2026-09-25","dateEnd":"2026-09-27","sport":"Формула-1","title":"Гран-при Азербайджана (Баку)","note":"Гонка в воскресенье 27 сентября. Городская трасса, высокая вероятность сейфти-каров","hot":1},
-    {"date":"2026-09-27","sport":"NFL","title":"NFL в Рио-де-Жанейро: Рэйвенс — Каубойс","note":"Маракана, 3-я неделя. Даллас — самый смотрибельный бренд NFL, латиноамериканский сегмент","hot":1},
-    {"date":"2026-09-29","sport":"Хоккей","title":"Старт НХЛ 2026/27","note":"Впервые с 1993/94 по 84 матча — сезон стартует уже в сентябре, в первый день 5 матчей. Аудитория в основном Северная Америка, старт регулярки без большого пика","hot":1},
-    {"date":"2026-10-01","dateEnd":"2026-10-06","sport":"Футбол","title":"Лига наций: туры 3–4","note":"Сборные доигрывают две трети лигового этапа (1–3 и 4–6 октября)","hot":2},
-    {"date":"2026-10-03","sport":"UFC","title":"UFC 332","note":"Delta Center, Солт-Лейк-Сити. Мейн-ивент официально не объявлен, в прессе фигурирует Уокер — Паркин","hot":2},
-    {"date":"2026-10-04","sport":"NFL","title":"NFL в Лондоне: Колтс — Коммандерс","note":"Tottenham Hotspur Stadium. Первая из трёх лондонских игр серии (4, 11 и 18 октября) — удобное время для EU-аудитории","hot":1},
-    {"date":"2026-10-07","dateEnd":"2026-10-18","sport":"Теннис","title":"Мастерс Шанхая (ATP 1000)","note":"Шанхай. Азиатская серия, пик — финал 18 октября","hot":1},
-    {"date":"2026-10-09","dateEnd":"2026-10-11","sport":"Формула-1","title":"Гран-при Сингапура","note":"Ночная гонка в воскресенье 11 октября. Один из самых смотрибельных этапов сезона","hot":2},
+    {"date":"2026-09-19","sport":"UFC","title":"UFC 331","note":"Лос-Анджелес. В источниках также фигурирует 12 сентября — дата уточняется","hot":2,"tbc":true},
+    {"date":"2026-09-24","dateEnd":"2026-09-29","sport":"Футбол","title":"Лига наций: туры 1–2","note":"Первые матчи лигового этапа сборных","hot":2},
+    {"date":"2026-09-26","sport":"Бокс","title":"Мейвезер — Пакьяо II","note":"Выставочный реванш легенд","hot":3},
+    {"date":"2026-09-29","sport":"Хоккей","title":"Старт НХЛ 2026/27","note":"Впервые с 1993/94 по 84 матча — сезон стартует уже в сентябре","hot":2},
+    {"date":"2026-09-30","sport":"Бокс","title":"Канело — Мбилли + Гарсия — Бенн","note":"Возвращение Канело, точная дата в сентябре уточняется","hot":3,"tbc":true},
+    {"date":"2026-09-30","dateEnd":"2026-10-06","sport":"Футбол","title":"Лига наций: туры 3–4","note":"Сборные доигрывают две трети лигового этапа","hot":2},
     {"date":"2026-10-13","dateEnd":"2026-10-14","sport":"Футбол","title":"ЛЧ: 2-й тур лигового этапа","note":"Лига чемпионов 2026/27","hot":2},
-    {"date":"2026-10-15","dateEnd":"2026-11-14","sport":"Киберспорт","title":"Чемпионат мира по LoL 2026","note":"Play-In в Лос-Анджелесе (15–18 октября), швейцарка в Аллене, Техас (23–31 октября), плей-офф с 3 ноября, финал 14 ноября в Бруклине. Трансляции бесплатные на Twitch/YouTube — на спортстриминговых сайтах пик слабый","hot":1},
-    {"date":"2026-10-15","sport":"Футбол","title":"Лига Европы: 2-й тур лигового этапа","note":"Лига Европы 2026/27","hot":1},
-    {"date":"2026-10-17","sport":"UFC","title":"UFC Fight Night: Бакли — Мэлотт","note":"Rogers Place, Эдмонтон. Полусредний вес, канадская аудитория","hot":1},
-    {"date":"2026-10-20","sport":"Баскетбол","title":"НБА: открытие сезона 2026/27","note":"Opening Night. Дата по данным прессы, официальный календарь НБА на момент обновления не опубликован — возможен сдвиг","hot":2,"tbc":true},
+    {"date":"2026-10-20","sport":"Баскетбол","title":"НБА: открытие сезона 2026/27","note":"Opening Night, старт регулярного чемпионата","hot":2},
     {"date":"2026-10-20","dateEnd":"2026-10-21","sport":"Футбол","title":"ЛЧ: 3-й тур лигового этапа","note":"Лига чемпионов 2026/27","hot":2},
-    {"date":"2026-10-22","sport":"Футбол","title":"Лига Европы: 3-й тур лигового этапа","note":"Лига Европы 2026/27","hot":1},
-    {"date":"2026-10-23","dateEnd":"2026-10-25","sport":"Формула-1","title":"Гран-при США (Остин)","note":"Гонка в воскресенье 25 октября. Ключевой этап для американской аудитории","hot":1},
-    {"date":"2026-10-24","sport":"UFC","title":"UFC 333: Волкановски — Евлоев","note":"Etihad Arena, Абу-Даби. Титул в полулёгком весе, ранний старт по US-времени","hot":2},
-    {"date":"2026-10-25","sport":"NFL","title":"NFL в Париже: Стилерз — Сэйнтс","note":"Стад де Франс, 7-я неделя. Дебют регулярки NFL во Франции","hot":1},
-    {"date":"2026-10-25","sport":"Футбол","title":"Эль Класико: Барселона — Реал Мадрид","note":"Камп Ноу, 10-й тур Ла Лиги. Дата подтверждена календарём LaLiga, точное время объявят позже. Максимальный пик клубного футбола","hot":3},
-    {"date":"2026-10-30","dateEnd":"2026-11-01","sport":"Формула-1","title":"Гран-при Мехико","note":"Гонка в воскресенье 1 ноября. Огромная местная аудитория, латиноамериканский сегмент","hot":1},
-    {"date":"2026-10-31","sport":"Бокс","title":"Канело — Мбилли","note":"ANB Arena, Рияд. Титул WBC во втором среднем. Перенесён с 12 сентября по просьбе Канело. PPV с максимальным разовым пиком","hot":3},
-    {"date":"2026-10-31","dateEnd":"2026-11-08","sport":"Теннис","title":"Мастерс Парижа (ATP 1000)","note":"Paris La Défense Arena. Последний Мастерс сезона, финал 8 ноября","hot":1},
-    {"date":"2026-10-31","sport":"Футбол","title":"Дер Классикер: Бавария — Боруссия Дортмунд","note":"Allianz Arena, 8-й тур Бундеслиги. Главное немецкое противостояние","hot":2},
-    {"date":"2026-11-01","sport":"Футбол","title":"Миланское дерби: Милан — Интер","note":"Сан-Сиро, 10-й тур Серии А. Точный день уикенда Серия А подтверждает позже — возможен сдвиг","hot":2,"tbc":true},
-    {"date":"2026-11-03","dateEnd":"2026-11-04","sport":"Футбол","title":"ЛЧ: 4-й тур лигового этапа","note":"Лига чемпионов 2026/27","hot":2}
+    {"date":"2026-10-25","sport":"Футбол","title":"Эль Класико: Барселона — Реал Мадрид","note":"Камп Ноу, 10-й тур Ла Лиги. Окно 23–25 октября, точный день объявят позже","hot":3,"tbc":true}
   ]
 };
 /* ===== EVENTS DATA END ===== */
@@ -412,97 +221,7 @@ const MONTHS_NOM = ['Январь','Февраль','Март','Апрель','�
 
 let events = DATA.events;
 let lastUpdated = DATA.lastUpdated;
-let DATA_LOG = DATA.changelog || [];
 let activeFilter = 'Все';
-
-const STARRED_FILTER = '★ Отмеченные';
-const KEY_STAR = 'bc_starred', KEY_SNAP = 'bc_snapshot';
-let starred = new Set();
-try { starred = new Set(JSON.parse(localStorage.getItem(KEY_STAR) || '[]')); } catch (_) {}
-let changes = {};
-
-function ekey(e) { return e.sport + '|' + e.title; }
-function escAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
-
-function toggleStar(k) {
-  starred.has(k) ? starred.delete(k) : starred.add(k);
-  try { localStorage.setItem(KEY_STAR, JSON.stringify([...starred])); } catch (_) {}
-  render();
-}
-
-function computeChanges() {
-  let prev = null;
-  try { prev = JSON.parse(localStorage.getItem(KEY_SNAP)); } catch (_) {}
-  if (prev && prev.events) {
-    for (const e of events) {
-      const k = ekey(e), p = prev.events[k];
-      if (!p) { changes[k] = 'new'; continue; }
-      if (p.date !== e.date || (p.dateEnd || '') !== (e.dateEnd || '')) { changes[k] = 'changed'; continue; }
-      if (p.tbc && !e.tbc) changes[k] = 'confirmed';
-    }
-  }
-  const snap = { savedAt: new Date().toISOString(), events: {} };
-  for (const e of events) snap.events[ekey(e)] = { date: e.date, dateEnd: e.dateEnd || '', tbc: !!e.tbc };
-  try { localStorage.setItem(KEY_SNAP, JSON.stringify(snap)); } catch (_) {}
-}
-
-function renderChangelog() {
-  const log = Array.isArray(DATA_LOG) ? DATA_LOG : [];
-  const box = document.getElementById('changelog');
-  if (!log.length) { box.style.display = 'none'; return; }
-  box.style.display = 'block';
-  document.getElementById('changelog-entries').innerHTML = log.slice(0, 20).map(en => {
-    const d = new Date(en.date + 'T00:00:00');
-    return `<div class="entry"><span class="d">${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)}</span><span>${en.text}</span></div>`;
-  }).join('');
-}
-
-function renderDiffLine() {
-  const box = document.getElementById('diffline');
-  const ks = Object.keys(changes).filter(k => {
-    const e = events.find(x => ekey(x) === k);
-    return e && !isPast(e);
-  });
-  if (!ks.length) { box.style.display = 'none'; return; }
-  const n = ks.filter(k => changes[k] === 'new').length;
-  const d = ks.filter(k => changes[k] === 'changed').length;
-  const c = ks.filter(k => changes[k] === 'confirmed').length;
-  const parts = [];
-  if (n) parts.push(n + ' нов.');
-  if (d) parts.push(d + ' с изменённой датой');
-  if (c) parts.push(c + ' с подтверждённой датой');
-  box.style.display = 'block';
-  box.textContent = 'С вашего прошлого визита: ' + parts.join(' · ') + ' — помечены на карточках';
-}
-
-function downloadIcs(k) {
-  const e = events.find(x => ekey(x) === k);
-  if (!e) return;
-  const d0 = e.date.replace(/-/g, '');
-  const end = new Date((e.dateEnd || e.date) + 'T00:00:00');
-  end.setDate(end.getDate() + 1);
-  const d1 = end.getFullYear() + String(end.getMonth() + 1).padStart(2, '0') + String(end.getDate()).padStart(2, '0');
-  const escI = s => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,');
-  const ics = [
-    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//betting-calendar//RU',
-    'BEGIN:VEVENT',
-    'UID:' + d0 + '-' + Math.abs([...k].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) | 0, 0)) + '@betting-calendar',
-    'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z',
-    'DTSTART;VALUE=DATE:' + d0,
-    'DTEND;VALUE=DATE:' + d1,
-    'SUMMARY:' + escI(e.title),
-    'DESCRIPTION:' + escI((e.note || '') + (e.tbc ? ' (дата уточняется)' : '')),
-    'END:VEVENT', 'END:VCALENDAR'
-  ].join('\r\n');
-  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = e.title.replace(/[^\wа-яА-ЯёЁ ()-]/g, '').trim().slice(0, 60) + '.ics';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(a.href);
-}
 
 function fmtDate(e) {
   const d = new Date(e.date + 'T00:00:00');
@@ -525,22 +244,18 @@ function isLive(e) {
 }
 
 function render() {
-  const sports = ['Все', ...new Set(events.map(e => e.sport)), STARRED_FILTER];
+  const sports = ['Все', ...new Set(events.map(e => e.sport))];
   document.getElementById('filters').innerHTML = sports.map(s =>
-    `<button class="${s === activeFilter ? 'active' : ''}" data-filter="${escAttr(s)}">${s}</button>`
+    `<button class="${s === activeFilter ? 'active' : ''}" onclick="setFilter('${s}')">${s}</button>`
   ).join('');
-  document.querySelectorAll('#filters button').forEach(b => b.onclick = () => setFilter(b.dataset.filter));
 
   const list = events
-    .filter(e => activeFilter === 'Все' || (activeFilter === STARRED_FILTER ? starred.has(ekey(e)) : e.sport === activeFilter))
+    .filter(e => activeFilter === 'Все' || e.sport === activeFilter)
     .slice()
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const tl = document.getElementById('timeline');
-  if (!list.length) {
-    tl.innerHTML = `<div class="empty">${activeFilter === STARRED_FILTER ? 'Нет отмеченных событий — нажмите ☆ на карточке' : 'Нет событий по этому фильтру'}</div>`;
-    return;
-  }
+  if (!list.length) { tl.innerHTML = '<div class="empty">Нет событий по этому фильтру</div>'; return; }
 
   let html = '', curMonth = -1;
   for (const e of list) {
@@ -549,17 +264,13 @@ function render() {
       curMonth = m;
       html += `<div class="month-title">${MONTHS_NOM[m]}</div>`;
     }
-    const k = ekey(e);
     const cls = ['event', 'hot' + (e.hot || 1), isPast(e) ? 'past' : ''].join(' ');
     const badges = [
       `<span class="badge sport">${e.sport}</span>`,
       e.hot === 3 ? '<span class="badge top">Топ</span>' : '',
       e.hot === 2 ? '<span class="badge fire">🔥</span>' : '',
       isLive(e) ? '<span class="badge live">Идёт</span>' : '',
-      e.tbc ? '<span class="badge tbc">Дата уточняется</span>' : '',
-      changes[k] === 'new' ? '<span class="badge new">Новое</span>' : '',
-      changes[k] === 'changed' ? '<span class="badge changed">Дата изменилась</span>' : '',
-      changes[k] === 'confirmed' ? '<span class="badge confirmed">Дата подтверждена</span>' : ''
+      e.tbc ? '<span class="badge tbc">Дата уточняется</span>' : ''
     ].join('');
     html += `<div class="${cls}">
       <div class="date">${fmtDate(e)}</div>
@@ -567,33 +278,12 @@ function render() {
         <div class="title">${e.title} ${badges}</div>
         ${e.note ? `<div class="note">${e.note}</div>` : ''}
       </div>
-      <div class="side">
-        <button class="star ${starred.has(k) ? 'on' : ''}" data-key="${escAttr(k)}" title="Отметить у себя">${starred.has(k) ? '★' : '☆'}</button>
-        ${!isPast(e) ? `<button class="ics" data-key="${escAttr(k)}" title="Скачать .ics для Google/Outlook">+ в календарь</button>` : ''}
-      </div>
     </div>`;
   }
   tl.innerHTML = html;
-  tl.querySelectorAll('.star').forEach(b => b.onclick = () => toggleStar(b.dataset.key));
-  tl.querySelectorAll('.ics').forEach(b => b.onclick = () => downloadIcs(b.dataset.key));
 }
 
 function setFilter(s) { activeFilter = s; render(); }
-
-function renderSoon() {
-  const now = new Date();
-  const horizon = new Date(now.getTime() + 14 * 86400000);
-  const list = events
-    .filter(e => (e.hot || 1) >= 2)
-    .filter(e => new Date(e.date + 'T00:00:00') <= horizon && !isPast(e))
-    .sort((a, b) => a.date.localeCompare(b.date));
-  const box = document.getElementById('soon');
-  if (!list.length) { box.style.display = 'none'; return; }
-  box.style.display = 'block';
-  document.getElementById('soon-list').innerHTML = list.map(e =>
-    `<div class="item"><span class="d">${fmtDate(e)}</span><span class="t">${e.title}</span>${e.hot === 3 ? '<span class="badge top">Топ</span>' : '<span class="badge fire">🔥</span>'}</div>`
-  ).join('');
-}
 
 function tickCountdown() {
   const next = events
@@ -618,11 +308,7 @@ function setUpdated() {
 
 function boot() {
   setUpdated();
-  computeChanges();
   render();
-  renderDiffLine();
-  renderChangelog();
-  renderSoon();
   tickCountdown();
   setInterval(tickCountdown, 30000);
 }
@@ -634,7 +320,6 @@ fetch('events.json', { cache: 'no-store' })
     if (json && Array.isArray(json.events)) {
       events = json.events;
       lastUpdated = json.lastUpdated || lastUpdated;
-      DATA_LOG = json.changelog || DATA_LOG;
     }
   })
   .catch(() => {})
